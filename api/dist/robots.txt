@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /register
+Disallow: /login
+Disallow: /admin
+Allow: /
+
+Sitemap: https://indisecure.online/sitemap.xml

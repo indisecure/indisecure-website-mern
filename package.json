@@ -1,0 +1,7 @@
+{
+  "name": "mern-vercel",
+  "private": true,
+  "scripts": {
+    "install:all": "cd api && npm install"
+  }
+}
