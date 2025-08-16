@@ -13,7 +13,7 @@ router.get('/reminder-preview', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
   const today = new Date();
-  const threeDaysAgo = new Date(today - 3 * 24 * 60 * 60 * 1000);
+  const threeDaysAgo = new Date(today - 2 * 24 * 60 * 60 * 1000);
 
   const dueFees = await Fee.find({
     dueDate: { $lte: today },
