@@ -27,7 +27,7 @@ const sendReminderEmail = async (to, name, course, balance, dueDate) => {
     from: process.env.ADMIN_EMAIL,
     to,
     subject: 'Fee Reminder',
-    text: `Dear ${capitalizedName}, your remaining fees of ₹${balance} for "${course}" was due on ${formattedDate}. Please complete your payment.`,
+    text: `Dear ${capitalizedName}, your remaining fees of ₹${balance} for the course "${course}" was due on ${formattedDate}. Please complete your payment at your earliest convenience.`,
     html: `
       <div style="font-family: Arial, sans-serif; font-size: 15px; color: #333;">
         <p>Dear ${capitalizedName},</p>
