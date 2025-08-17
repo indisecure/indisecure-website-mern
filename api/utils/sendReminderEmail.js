@@ -1,7 +1,5 @@
 const nodemailer = require('nodemailer');
 const path = require('path');
-
-// Configure transporter
 const transporter = nodemailer.createTransport({
   service: 'gmail',
   auth: {
@@ -9,14 +7,11 @@ const transporter = nodemailer.createTransport({
     pass: process.env.ADMIN_APP_PASSWORD
   }
 });
-
-// Helper to capitalize names
 const capitalizeName = name =>
   name.trim().toLowerCase().split(' ')
     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
     .join(' ');
 
-// Main function
 const sendReminderEmail = async (to, name, course, balance, dueDate) => {
   if (!/\S+@\S+\.\S+/.test(to)) {
     console.warn(`⚠️ Invalid email format: ${to}`);
@@ -25,11 +20,9 @@ const sendReminderEmail = async (to, name, course, balance, dueDate) => {
 
   const formattedDate = new Date(dueDate).toLocaleDateString('en-IN');
   const capitalizedName = capitalizeName(name);
+ 
+  const qrPath = path.join(__dirname, 'qr.jpeg');
 
-  // Path to static QR image in same folder
-  const qrPath = path.join(__dirname, 'qr.png');
-
-  // Email content
   const mailOptions = {
     from: process.env.ADMIN_EMAIL,
     to,
@@ -38,21 +31,21 @@ const sendReminderEmail = async (to, name, course, balance, dueDate) => {
     html: `
       <div style="font-family: Arial, sans-serif; font-size: 15px; color: #333;">
         <p>Dear ${capitalizedName},</p>
-        <p>This is a gentle reminder that your <strong>remaining fees</strong> of <strong>₹${balance}</strong> for the course <em>"${course}"</em> <strong>was due</strong> on <strong>${formattedDate}</strong>.</p>
+        <p>This is a gentle reminder that your <strong>remaining fees</strong> of <strong> ₹${balance}</strong> for the course <em>"${course}"</em> <strong> was due.</strong></p>
         <p>Please complete your payment at your earliest convenience.</p>
         <p>You can scan the QR code below to pay via UPI:</p>
-        <img src="cid:paymentqr" alt="Payment QR Code" width="200" height="200" />
+        <p>Once you paid using UPI,pls.share transaction details while replying this email:</p>
+        <img src="cid:paymentqr" alt="Payment QR Code" width="300" height="300" />
         <p>Regards,<br/><strong>Indi Secure</strong></p>
       </div>
     `,
     attachments: [{
-      filename: 'qr.png',
+      filename: 'qr.jpeg',
       path: qrPath,
       cid: 'paymentqr'
     }]
   };
-
-  // Send email
+ 
   try {
     const info = await transporter.sendMail(mailOptions);
     console.log(`📧 Reminder sent to ${capitalizedName} (${to}) for "${course}": ${info.response}`);
