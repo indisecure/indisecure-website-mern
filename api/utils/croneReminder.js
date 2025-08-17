@@ -1,17 +1,17 @@
-const cron = require('node-cron')
-const Fee = require('../models/feeSchema')
-const sendReminderEmail = require('./sendReminderEmail')
-function startReminderCron() {
-  cron.schedule('0 9 * * *', async () => {
-    const today = new Date();
-    const threeDaysAgo = new Date(today - 2* 24 * 60 * 60 * 1000);
+const cron = require('node-cron');
+const Fee = require('../models/feeSchema');
+const sendReminderEmail = require('./sendReminderEmail');
 
+function startReminderCron() {
+  cron.schedule('0 10 * * *', async () => {
+    const today = new Date();
+    const daysAgo = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
     const dueFees = await Fee.find({
       dueDate: { $lte: today },
       isPaid: false,
       reminderEnabled: true,
       $or: [
-        { lastReminderSent: { $lt: threeDaysAgo } },
+        { lastReminderSent: { $lt: daysAgo } },
         { lastReminderSent: null }
       ]
     });
@@ -28,8 +28,6 @@ function startReminderCron() {
             fee.dueDate
           );
 
-
-
           fee.lastReminderSent = today;
           await fee.save();
 
@@ -41,9 +39,11 @@ function startReminderCron() {
     }
 
     console.log(`📨 ${dueFees.length} reminders processed at ${new Date().toLocaleString('en-IN')}`);
+  }, {
+    timezone: 'Asia/Kolkata'
   });
 
-  console.log('📅 Reminder cron job scheduled at 9:00 AM once in 2 days');
+  console.log('📅 Reminder cron job scheduled for 9:00 AM IST daily');
 }
 
-module.exports = startReminderCron
+module.exports = startReminderCron;

@@ -1,10 +1,12 @@
 const express = require('express');
 const router = express.Router();
+const moment = require('moment-timezone');
 const Fee = require('../models/feeSchema');
 const verifyToken = require('../utils/verifyToken');
 
 router.get('/', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
+
   const fees = await Fee.find().sort({ dueDate: 1 });
   res.json(fees);
 });
@@ -12,22 +14,21 @@ router.get('/', verifyToken, async (req, res) => {
 router.get('/reminder-preview', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
-  const today = new Date();
-  const threeDaysAgo = new Date(today - 2 * 24 * 60 * 60 * 1000);
+  const today = moment().tz('Asia/Kolkata').startOf('day').toDate();
+  const daysAgo = moment().tz('Asia/Kolkata').subtract(2, 'days').startOf('day').toDate();
 
   const dueFees = await Fee.find({
     dueDate: { $lte: today },
     isPaid: false,
     reminderEnabled: true,
     $or: [
-      { lastReminderSent: { $lt: threeDaysAgo } },
+      { lastReminderSent: { $lt: daysAgo } },
       { lastReminderSent: null }
     ]
   });
 
   res.json(dueFees);
 });
-
 
 router.post('/', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
@@ -46,14 +47,12 @@ router.post('/', verifyToken, async (req, res) => {
   res.json({ success: true });
 });
 
-
 router.put('/:id/status', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
   await Fee.updateOne({ _id: req.params.id }, { isPaid: req.body.isPaid });
   res.json({ success: true });
 });
-
 
 router.put('/:id/reminder', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
@@ -72,7 +71,5 @@ router.put('/:id/paid-amount', verifyToken, async (req, res) => {
   await Fee.updateOne({ _id: req.params.id }, { paidAmount, isPaid });
   res.json({ success: true });
 });
-
-
 
 module.exports = router;
