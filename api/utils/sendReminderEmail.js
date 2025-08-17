@@ -34,7 +34,7 @@ const sendReminderEmail = async (to, name, course, balance, dueDate) => {
         <p>This is a gentle reminder that your <strong>remaining fees</strong> of <strong> ₹${balance}</strong> for the course <em>"${course}"</em> <strong> is due.</strong></p>
         <p>Please complete your payment at your earliest convenience.</p>
         <p>You can scan the QR code below to pay via UPI:</p>
-        <p>Once you paid using UPI,pls.share transaction details while replying this email:</p>
+        <p>After making payment using UPI,pls.share transaction details while replying this email:</p>
         <img src="cid:paymentqr" alt="Payment QR Code" width="300" height="300" />
         <p>Regards,<br/><strong>Indi Secure</strong></p>
       </div>
