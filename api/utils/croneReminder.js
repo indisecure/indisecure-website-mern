@@ -3,7 +3,7 @@ const Fee = require('../models/feeSchema');
 const sendReminderEmail = require('./sendReminderEmail');
 
 function startReminderCron() {
-  cron.schedule('0 10 * * *', async () => {
+  cron.schedule('0 9 * * *', async () => {
     const today = new Date();
     const daysAgo = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
     const dueFees = await Fee.find({
