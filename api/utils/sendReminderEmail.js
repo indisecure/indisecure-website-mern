@@ -31,7 +31,7 @@ const sendReminderEmail = async (to, name, course, balance, dueDate) => {
     html: `
       <div style="font-family: Arial, sans-serif; font-size: 15px; color: #333;">
         <p>Dear ${capitalizedName},</p>
-        <p>This is a gentle reminder that your <strong>remaining fees</strong> of <strong> ₹${balance}</strong> for the course <em>"${course}"</em> <strong> was due.</strong></p>
+        <p>This is a gentle reminder that your <strong>remaining fees</strong> of <strong> ₹${balance}</strong> for the course <em>"${course}"</em> <strong> is due.</strong></p>
         <p>Please complete your payment at your earliest convenience.</p>
         <p>You can scan the QR code below to pay via UPI:</p>
         <p>Once you paid using UPI,pls.share transaction details while replying this email:</p>
