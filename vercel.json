@@ -3,6 +3,19 @@
     { "source": "/api/(.*)", "destination": "/api/index.js" },
     { "source": "/(.*)", "destination": "/api/index.js" }
   ],
+  "redirects": [
+    {
+      "source": "/(.*)",
+      "destination": "https://indisecure.online/$1",
+      "has": [
+        {
+          "type": "host",
+          "value": "www.indisecure.online"
+        }
+      ],
+      "statusCode": 308
+    }
+  ],
   "functions": {
     "api/index.js": {
       "includeFiles": "api/dist/**"
