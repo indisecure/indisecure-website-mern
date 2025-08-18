@@ -3,6 +3,8 @@ const router = express.Router();
 const moment = require('moment-timezone');
 const Fee = require('../models/feeSchema');
 const verifyToken = require('../utils/verifyToken');
+const triggerReminder = require('../trigger-reminder');
+router.get('/trigger-reminder', triggerReminder);
 
 router.get('/', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });

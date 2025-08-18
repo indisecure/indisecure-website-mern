@@ -17,8 +17,6 @@ app.use(express.static(path.join(__dirname, 'dist')));
 app.get('*', (req, res) => {
   res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-const startReminderCron = require('./utils/croneReminder');
-startReminderCron(); 
 
 app.listen(process.env.PORT, () => {
   console.log(`Running on port ${process.env.PORT }`);
