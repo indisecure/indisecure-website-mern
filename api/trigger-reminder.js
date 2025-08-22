@@ -45,9 +45,6 @@ module.exports = async function triggerReminder(req, res) {
   }
 
   res.json({
-    success: true,
-    processed: dueFees.length,
-    sent: sentCount,
-    timestamp: new Date().toLocaleString('en-IN')
+    success: true,    
   });
 };
