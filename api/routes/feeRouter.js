@@ -4,6 +4,7 @@ const moment = require('moment-timezone');
 const Fee = require('../models/feeSchema');
 const verifyToken = require('../utils/verifyToken');
 const triggerReminder = require('../trigger-reminder');
+
 router.get('/trigger-reminder', triggerReminder);
 
 router.get('/', verifyToken, async (req, res) => {
@@ -24,7 +25,7 @@ router.get('/reminder-preview', verifyToken, async (req, res) => {
     isPaid: false,
     reminderEnabled: true,
     $or: [
-      { lastReminderSent: { $lt: daysAgo } },
+      { lastReminderSent: { $lte: daysAgo } },
       { lastReminderSent: null }
     ]
   });
@@ -32,6 +33,7 @@ router.get('/reminder-preview', verifyToken, async (req, res) => {
   res.json(dueFees);
 });
 
+// Admin-only: create new fee entry
 router.post('/', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
@@ -42,13 +44,14 @@ router.post('/', verifyToken, async (req, res) => {
     feeAmount: req.body.feeAmount,
     dueDate: req.body.dueDate,
     isPaid: req.body.isPaid || false,
-    reminderEnabled: req.body.reminderEnabled || true
+    reminderEnabled: req.body.reminderEnabled !== false // default true
   });
 
   await fee.save();
   res.json({ success: true });
 });
 
+// Admin-only: update fee payment status
 router.put('/:id/status', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
@@ -56,6 +59,7 @@ router.put('/:id/status', verifyToken, async (req, res) => {
   res.json({ success: true });
 });
 
+// Admin-only: toggle reminder
 router.put('/:id/reminder', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 
@@ -63,6 +67,7 @@ router.put('/:id/reminder', verifyToken, async (req, res) => {
   res.json({ success: true });
 });
 
+// Admin-only: update paid amount and auto-toggle isPaid
 router.put('/:id/paid-amount', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
 

@@ -3,7 +3,9 @@ const Fee = require('./models/feeSchema');
 const sendReminderEmail = require('./utils/sendReminderEmail');
 
 module.exports = async function triggerReminder(req, res) {
-  if (req.method !== 'GET') return res.status(405).json({ error: 'Method not allowed' });
+  if (req.method !== 'GET') {
+    return res.status(405).json({ error: 'Method not allowed' });
+  }
 
   const token = req.query.token;
   if (token !== process.env.CRON_SECRET) {
@@ -18,16 +20,16 @@ module.exports = async function triggerReminder(req, res) {
     isPaid: false,
     reminderEnabled: true,
     $or: [
-      { lastReminderSent: { $lt: daysAgo } },
+      { lastReminderSent: { $lte: daysAgo } },
       { lastReminderSent: null }
     ]
   });
 
-  let sentCount = 0;
   for (const fee of dueFees) {
     if (fee.studentEmail) {
       try {
         const balance = fee.feeAmount - fee.paidAmount;
+
         await sendReminderEmail(
           fee.studentEmail,
           fee.studentName,
@@ -35,16 +37,14 @@ module.exports = async function triggerReminder(req, res) {
           balance,
           fee.dueDate
         );
+
         fee.lastReminderSent = today;
         await fee.save();
-        sentCount++;
       } catch (err) {
         console.error(`❌ Failed to send to ${fee.studentEmail}:`, err.message);
       }
     }
   }
 
-  res.json({
-    success: true,    
-  });
+  res.json({ success: true });
 };

@@ -8,7 +8,7 @@ require('dotenv').config();
 
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_EMAIL_PASSWORD;
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password, 3);
 
   const existing = await User.findOne({ email });
   if (existing) {

@@ -5,7 +5,7 @@ const User = require('../models/userSchema');
 const router = express.Router()
 router.post('/register', async (req, res) => {
   const { email, password } = req.body;
-  const passwordHash = await bcrypt.hash(password, 10);
+  const passwordHash = await bcrypt.hash(password, 3);
   try {
     const user = new User({ email, passwordHash });
     await user.save();
