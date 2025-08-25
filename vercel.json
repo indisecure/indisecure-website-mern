@@ -18,7 +18,8 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/dist/**"
+      "includeFiles": "api/dist/**",
+      "regions": ["bom1"] 
     }
   }
 }
