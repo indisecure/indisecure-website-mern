@@ -2,16 +2,7 @@ require('dotenv').config();
 const Fee = require('./models/feeSchema');
 const sendReminderEmail = require('./utils/sendReminderEmail');
 
-module.exports = async function triggerReminder(req, res) {
-  if (req.method !== 'GET') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const token = req.query.token;
-  if (token !== process.env.CRON_SECRET) {
-    return res.status(403).json({ error: 'Unauthorized' });
-  }
-
+module.exports = async function runReminderJob() {
   const today = new Date();
   const daysAgo = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
 
@@ -46,5 +37,5 @@ module.exports = async function triggerReminder(req, res) {
     }
   }
 
-  res.json({ success: true });
+  return { success: true, count: dueFees.length };
 };

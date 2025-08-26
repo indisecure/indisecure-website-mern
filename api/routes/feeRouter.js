@@ -3,9 +3,19 @@ const router = express.Router();
 const moment = require('moment-timezone');
 const Fee = require('../models/feeSchema');
 const verifyToken = require('../utils/verifyToken');
-const triggerReminder = require('../trigger-reminder');
+const runReminderJob = require('../reminderService'); 
 
-router.get('/trigger-reminder', triggerReminder);
+router.get('/trigger-reminder', verifyToken, async (req, res) => {
+  if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
+
+  try {
+    const result = await runReminderJob();
+    res.json({ success: true, remindersSent: result.count });
+  } catch (err) {
+    res.status(500).json({ error: 'Reminder job failed', details: err.message });
+  }
+});
+
 
 router.get('/', verifyToken, async (req, res) => {
   if (!req.user.isAdmin) return res.status(403).json({ error: 'Access denied' });
