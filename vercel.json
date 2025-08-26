@@ -18,8 +18,7 @@
   ],
   "functions": {
     "api/index.js": {
-      "includeFiles": "api/dist/**",
-      "memory": 256,
+      "includeFiles": "api/dist/**",      
       "maxDuration": 20
     }
   },
