@@ -40,8 +40,9 @@ const connectDB = require('./db');
   //   console.log(`Running on port ${process.env.PORT}`);
   // });
 
+  module.exports = (req, res) => app(req, res);
   
 })();
 
 
-module.exports = (req, res) => app(req, res);
+
