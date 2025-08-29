@@ -1,4 +1,5 @@
-require('dotenv').config();
+const dotenv = require('dotenv');
+dotenv.config({ quiet: true });
 const Fee = require('./models/feeSchema');
 const sendReminderEmail = require('./utils/sendReminderEmail');
 

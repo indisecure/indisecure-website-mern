@@ -1,14 +1,14 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const User = require('./models/userSchema');
-require('dotenv').config();
-
+const dotenv = require('dotenv');
+dotenv.config({ quiet: true });
 (async () => {
   await mongoose.connect(process.env.MONGO_URI);
 
   const email = process.env.ADMIN_EMAIL;
   const password = process.env.ADMIN_EMAIL_PASSWORD;
-  const passwordHash = await bcrypt.hash(password, 3);
+  const passwordHash = await bcrypt.hash(password, 2);
 
   const existing = await User.findOne({ email });
   if (existing) {
