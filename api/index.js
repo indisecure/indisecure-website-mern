@@ -36,13 +36,12 @@ const connectDB = require('./db');
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
   });
 
-  app.listen(process.env.PORT, () => {
-    console.log(`Running on port ${process.env.PORT}`);
-  });
+  // app.listen(process.env.PORT, () => {
+  //   console.log(`Running on port ${process.env.PORT}`);
+  // });
 
-  // Serverless export (e.g. for Vercel)
-  module.exports = (req, res) => app(req, res);
+  
 })();
 
 
-//node -e "console.log(require('crypto').randomBytes(64).toString('hex'))"
+module.exports = (req, res) => app(req, res);
