@@ -6,21 +6,29 @@ const dotenv = require('dotenv');
 dotenv.config({ quiet: true });
 
 const cors = require('cors');
-(async () => {  
-  const start = Date.now();
-  try {
-    const conn = await mongoose.connect(process.env.MONGO_URI); 
-    const latency = Date.now() - start;
-    console.log(`✅ [DB] Connected to ${conn.connection.host} in ${latency}ms`);
-    console.log('📶 [DB] Post-connect state:', mongoose.connection.readyState);
-  } catch (error) {
-    console.error('❌ [DB] Connection error:', error.message);    
-  }
-})();
+
+// Use a global variable to cache the database connection
+let cachedDb = null;
+
+async function connectToDatabase() {
+    if (cachedDb) {
+        console.log('✅ Using existing database connection');
+        return cachedDb;
+    }
+    try {
+        console.log('⏳ Creating a new database connection...');
+        const conn = await mongoose.connect(process.env.MONGO_URI);
+        cachedDb = conn;
+        console.log(`✅ [DB] Connected to ${conn.connection.host}`);
+        return conn;
+    } catch (error) {
+        console.error('❌ [DB] Connection error:', error.message);
+        throw error; 
+    }
+}
 
 app.use(cors());
 app.use(express.json());
-
 app.use(express.static(path.join(__dirname, 'dist')));
 
 const userRouter = require('./routes/userRouter');
@@ -30,23 +38,27 @@ const feeRouter = require('./routes/feeRouter');
 app.use('/fees', feeRouter);
 
 app.get('/warm', (req, res) => {
-  const token = req.query.token;
-  if (token !== process.env.CRON_SECRET) {
-    return res.status(403).send('Forbidden');
-  }
-  res.status(200).send('OK');
+    const token = req.query.token;
+    if (token !== process.env.CRON_SECRET) {
+        return res.status(403).send('Forbidden');
+    }
+    res.status(200).send('OK');
 });
 
 const cronRouter = require('./routes/cronRouter');
 app.use('/cron', cronRouter);
 
-// ✅ Wildcard route moved to the end
 app.get('*', (req, res) => {
-  res.sendFile(path.join(__dirname, 'dist', 'index.html'));
+    res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
 
-// app.listen(process.env.PORT, () => {
-//   console.log(`Running on port ${process.env.PORT}`);
-// });
-
-module.exports = (req, res) => app(req, res);
+// The main Vercel serverless function entry point
+module.exports = async (req, res) => {
+    try {
+        await connectToDatabase();
+        return app(req, res);
+    } catch (error) {
+        // If the database connection fails, send a server error response
+        res.status(500).send('Database connection failed.');
+    }
+};
