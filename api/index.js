@@ -57,8 +57,7 @@ module.exports = async (req, res) => {
     try {
         await connectToDatabase();
         return app(req, res);
-    } catch (error) {
-        // If the database connection fails, send a server error response
+    } catch (error) {        
         res.status(500).send('Database connection failed.');
     }
 };
