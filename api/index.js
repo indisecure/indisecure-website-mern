@@ -51,7 +51,11 @@ app.use('/cron', cronRouter);
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-
+/*
+app.listen(process.env.PORT, () => {
+    console.log('Server Running on Port ' + process.env.PORT);
+})
+*/
 // The main Vercel serverless function entry point
 module.exports = async (req, res) => {
     try {
