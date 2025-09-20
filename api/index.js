@@ -56,7 +56,10 @@ app.listen(process.env.PORT, () => {
     console.log('Server Running on Port ' + process.env.PORT);
 })
 */
+
 // The main Vercel serverless function entry point
+
+
 module.exports = async (req, res) => {
     try {
         await connectToDatabase();
