@@ -37,13 +37,13 @@ app.use('/', userRouter);
 const feeRouter = require('./routes/feeRouter');
 app.use('/fees', feeRouter);
 
-app.get('/warm', (req, res) => {
-    const token = req.query.token;
-    if (token !== process.env.CRON_SECRET) {
-        return res.status(403).send('Forbidden');
-    }
-    res.status(200).send('OK');
-});
+// app.get('/warm', (req, res) => {
+//     const token = req.query.token;
+//     if (token !== process.env.CRON_SECRET) {
+//         return res.status(403).send('Forbidden');
+//     }
+//     res.status(200).send('OK');
+// });
 
 const cronRouter = require('./routes/cronRouter');
 app.use('/cron', cronRouter);
