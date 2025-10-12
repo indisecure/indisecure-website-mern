@@ -48,14 +48,19 @@ app.get('/warm', (req, res) => {
 const cronRouter = require('./routes/cronRouter');
 app.use('/cron', cronRouter);
 
+const searchRouter=require('./routes/searchRouter')
+app.use('/search',searchRouter)
+
 app.get('*', (req, res) => {
     res.sendFile(path.join(__dirname, 'dist', 'index.html'));
 });
-/*
-app.listen(process.env.PORT, () => {
-    console.log('Server Running on Port ' + process.env.PORT);
-})
-*/
+
+// (async () => {  
+// await connectToDatabase();
+// app.listen(process.env.PORT, () => {
+//     console.log('Server Running on Port ' + process.env.PORT);
+// })
+// })()
 
 // The main Vercel serverless function entry point
 
