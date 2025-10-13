@@ -188,15 +188,15 @@ app.all("*", async (req, res) => {
 });
 
 // Local server
-(async () => {
-  try {
-    await connectToDatabase();
-    const port = process.env.PORT || 5000;
-    app.listen(port, () => console.log(`Server running on port ${port}`));
-  } catch (err) {
-    console.error("DB connection failed:", err.message);
-  }
-})();
+// (async () => {
+//   try {
+//     await connectToDatabase();
+//     const port = process.env.PORT || 5000;
+//     app.listen(port, () => console.log(`Server running on port ${port}`));
+//   } catch (err) {
+//     console.error("DB connection failed:", err.message);
+//   }
+// })();
 
 // Export for Vercel
 module.exports = async (req, res) => {
