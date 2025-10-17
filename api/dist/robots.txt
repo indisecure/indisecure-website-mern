@@ -2,6 +2,7 @@ User-agent: *
 Disallow: /register
 Disallow: /login
 Disallow: /admin
+Disallow: /logout
 Allow: /
 
 Sitemap: https://indisecure.online/sitemap.xml
