@@ -126,50 +126,82 @@ app.all("*", async (req, res) => {
       return res.json({ success: true, remindersSent: result.count });
     }
 
-    /* ---------------- SEARCH ---------------- */
-    if (url.startsWith("/search") && req.method === "GET") {
-      const { q, lat, lng, radius = 20000, limit = 20, page = 1 } = req.query;
-      const pageLimit = Math.min(parseInt(limit), 50);
-      const skip = (Math.max(parseInt(page), 1) - 1) * pageLimit;
-      let results = [];
+  /* ---------------- SEARCH ---------------- */
+if (url.startsWith("/search") && req.method === "GET") {
+  const { q, lat, lng, radius = 20000, limit = 20, page = 1 } = req.query;
+  const pageLimit = Math.min(parseInt(limit), 50);
+  const skip = (Math.max(parseInt(page), 1) - 1) * pageLimit;
+  let results = [];
 
-      const hasText = q && q.trim() !== "";
-      const hasLocation = lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng));
+  const hasText = q && q.trim() !== "";
+  const hasLocation = lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng));
 
-      if (hasLocation && !hasText) {
-        results = await Course.find({
-          location: {
-            $nearSphere: {
-              $geometry: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
-              $maxDistance: parseInt(radius),
-            },
-          },
-        })
-          .skip(skip)
-          .limit(pageLimit);
-      } else if (hasText) {
-        results = await Course.find({ $text: { $search: q.trim() } })
-          .skip(skip)
-          .limit(pageLimit)
-          .sort({ score: { $meta: "textScore" } })
-          .select({ score: { $meta: "textScore" } });
+  if (hasLocation && !hasText) {
+    results = await Course.find({
+      location: {
+        $nearSphere: {
+          $geometry: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
+          $maxDistance: parseInt(radius),
+        },
+      },
+    })
+      .skip(skip)
+      .limit(pageLimit);
+  } else if (hasText) {
+    results = await Course.find({ $text: { $search: q.trim() } })
+      .skip(skip)
+      .limit(pageLimit)
+      .sort({ score: { $meta: "textScore" } })
+      .select({ score: { $meta: "textScore" } });
 
-        const words = q.toLowerCase().split(" ");
-        results = results.filter((course) =>
-          words.every(
-            (word) =>
-              course.name.toLowerCase().includes(word) ||
-              course.tags.some((tag) => tag.toLowerCase().includes(word)) ||
-              course.description.toLowerCase().includes(word)
-          )
-        );
-      } else {
-        results = await Course.find().skip(skip).limit(pageLimit);
-      }
+    const words = q.toLowerCase().split(" ");
+    results = results.filter((course) =>
+      words.every(
+        (word) =>
+          course.name.toLowerCase().includes(word) ||
+          course.tags.some((tag) => tag.toLowerCase().includes(word)) ||
+          course.description.toLowerCase().includes(word)
+      )
+    );
+  } else {
+    results = await Course.find().skip(skip).limit(pageLimit);
+  }
 
-      return res.json({ success: true, count: results.length, results });
-    }
+  const acceptsHtml = req.headers.accept && req.headers.accept.includes("text/html");
 
+  if (acceptsHtml) {
+    const html = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Search Results for "${q || 'All Courses'}"</title>
+          <meta name="description" content="Courses related to ${q || 'various topics'}">
+          <style>
+            body { font-family: Arial, sans-serif; padding: 20px; }
+            h1 { color: #333; }
+            .course { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+            .course h2 { margin: 0; font-size: 1.2em; }
+            .course p { margin: 5px 0; }
+          </style>
+        </head>
+        <body>
+          <h1>Search Results for "${q || 'All Courses'}"</h1>
+          <p>Found ${results.length} course${results.length !== 1 ? 's' : ''}.</p>
+          ${results.map(course => `
+            <div class="course">
+              <h2>${course.name}</h2>
+              <p>${course.description}</p>
+              <p><strong>Tags:</strong> ${course.tags.join(', ')}</p>
+            </div>
+          `).join('')}
+        </body>
+      </html>
+    `;
+    return res.send(html);
+  }
+
+  return res.json({ success: true, count: results.length, results });
+}
     /* ---------------- WARM ---------------- */
     if (url.startsWith("/warm") && req.method === "GET") {
       const token = req.query.token;
@@ -188,15 +220,15 @@ app.all("*", async (req, res) => {
 });
 
 // Local server
-// (async () => {
-//   try {
-//     await connectToDatabase();
-//     const port = process.env.PORT || 5000;
-//     app.listen(port, () => console.log(`Server running on port ${port}`));
-//   } catch (err) {
-//     console.error("DB connection failed:", err.message);
-//   }
-// })();
+(async () => {
+  try {
+    await connectToDatabase();
+    const port = process.env.PORT || 5000;
+    app.listen(port, () => console.log(`Server running on port ${port}`));
+  } catch (err) {
+    console.error("DB connection failed:", err.message);
+  }
+})();
 
 // Export for Vercel
 module.exports = async (req, res) => {
