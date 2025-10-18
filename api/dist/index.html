@@ -40,21 +40,24 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css" />
 
   <!-- ✅ Website Schema -->
-  <script type="application/ld+json">
+ <script type="application/ld+json">
 {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "@id": "https://indisecure.online/#website",
+  "url": "https://indisecure.online/",
   "name": "Indi Secure",
   "alternateName": "IndiSecure",
-  "url": "https://indisecure.online/",
-  "publisher": { "@id": "https://indisecure.online/#organization" },
+  "publisher": {
+    "@type": "Organization",
+    "@id": "https://indisecure.online/#organization",
+    "name": "Indi Secure"
+  },
   "potentialAction": {
-  "@type": "SearchAction",
-  "target": "https://indisecure.online/search?q={search_term_string}",
-  "query-input": "required name=search_term_string"
-}
-
+    "@type": "SearchAction",
+    "target": "https://indisecure.online/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
 }
 </script>
 
