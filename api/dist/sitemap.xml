@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+
+  <!-- Main Pages -->
   <url>
     <loc>https://indisecure.online/</loc>
     <priority>1.0</priority>
@@ -20,48 +22,73 @@
     <loc>https://indisecure.online/contact</loc>
     <priority>0.7</priority>
   </url>
+
+  <!-- Course Pages with lastmod and changefreq -->
   <url>
-    <loc>https://indisecure.online/search?q=C%2FC%2B%2B</loc>
+    <loc>https://indisecure.online/c-cpp-coaching-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Java</loc>
+    <loc>https://indisecure.online/java-training-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Python</loc>
+    <loc>https://indisecure.online/python-course-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://indisecure.online/javascript-classes-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=JavaScript</loc>
+    <loc>https://indisecure.online/web-design-institute-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Web+Design</loc>
+    <loc>https://indisecure.online/react-training-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=React</loc>
+    <loc>https://indisecure.online/dsa-coaching-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=DSA</loc>
+    <loc>https://indisecure.online/docker-course-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Docker</loc>
+    <loc>https://indisecure.online/java-full-stack-classes-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Java+Full+Stack</loc>
+    <loc>https://indisecure.online/python-full-stack-training-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/search?q=Python+Full+Stack</loc>
+    <loc>https://indisecure.online/mern-stack-course-mp-nagar-bhopal</loc>
+    <lastmod>2025-10-19</lastmod>
+    <changefreq>quarterly</changefreq>
     <priority>0.8</priority>
   </url>
-  <url>
-    <loc>https://indisecure.online/search?q=MERN+Stack</loc>
-    <priority>0.8</priority>
-  </url>
+
 </urlset>
