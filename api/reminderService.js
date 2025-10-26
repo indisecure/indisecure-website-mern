@@ -1,11 +1,15 @@
 const dotenv = require('dotenv');
 dotenv.config({ quiet: true });
+
 const Fee = require('./models/feeSchema');
 const sendReminderEmail = require('./utils/sendReminderEmail');
 
 module.exports = async function runReminderJob() {
   const today = new Date();
+  today.setHours(0, 0, 0, 0); 
+
   const daysAgo = new Date(today.getTime() - 2 * 24 * 60 * 60 * 1000);
+  daysAgo.setHours(0, 0, 0, 0); 
 
   const dueFees = await Fee.find({
     dueDate: { $lte: today },
