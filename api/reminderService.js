@@ -16,7 +16,7 @@ module.exports = async function runReminderJob() {
     isPaid: false,
     reminderEnabled: true,
     $or: [
-      { lastReminderSent: { $lte: daysAgo } },
+      { lastReminderSent: { $lt: daysAgo } },
       { lastReminderSent: null }
     ]
   });
@@ -34,7 +34,7 @@ module.exports = async function runReminderJob() {
           fee.dueDate
         );
 
-        fee.lastReminderSent = today;
+        fee.lastReminderSent = new Date();
         await fee.save();
       } catch (err) {
         console.error(`❌ Failed to send to ${fee.studentEmail}:`, err.message);
