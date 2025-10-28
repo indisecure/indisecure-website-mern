@@ -23,72 +23,95 @@
     <priority>0.7</priority>
   </url>
 
-  <!-- Course Pages with lastmod and changefreq -->
+  <!-- Updated Course Pages -->
   <url>
-    <loc>https://indisecure.online/c-cpp-coaching-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/c-c-plus-plus-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/java-training-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/java-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/python-course-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/python-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/javascript-classes-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/javascript-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/web-design-institute-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/web-design-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/react-training-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/react-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/dsa-coaching-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/dsa-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/docker-course-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/docker-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/java-full-stack-classes-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/java-full-stack-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/python-full-stack-training-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/python-full-stack-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
-    <loc>https://indisecure.online/mern-stack-course-mp-nagar-bhopal</loc>
-    <lastmod>2025-10-19</lastmod>
+    <loc>https://indisecure.online/mern-stack-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.8</priority>
   </url>
-
+  <url>
+    <loc>https://indisecure.online/oracle-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indisecure.online/mongodb-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indisecure.online/sql-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
+  <url>
+    <loc>https://indisecure.online/data-analytics-course-in-bhopal</loc>
+    <lastmod>2025-10-28</lastmod>
+    <changefreq>yearly</changefreq>
+    <priority>0.8</priority>
+  </url>
 </urlset>
