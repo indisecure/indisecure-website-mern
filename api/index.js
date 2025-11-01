@@ -19,7 +19,6 @@ app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, "dist")));
 
-// MongoDB cached connection
 let cachedDb = null;
 async function connectToDatabase() {
   if (cachedDb) return cachedDb;
@@ -29,12 +28,11 @@ async function connectToDatabase() {
   return conn;
 }
 
-// Unified serverless route handler
 app.all("*", async (req, res) => {
   try {
     const url = req.url;
 
-    /* ---------------- USER ROUTES ---------------- */
+    // USER ROUTES
     if (url.startsWith("/register") && req.method === "POST") {
       const { email, password } = req.body;
       const passwordHash = await bcrypt.hash(password, 2);
@@ -62,13 +60,12 @@ app.all("*", async (req, res) => {
       return res.json({ token });
     }
 
-    /* ---------------- FEE ROUTES ---------------- */
+    // FEE ROUTES
     if (url.startsWith("/fees")) {
       const token = req.headers.authorization?.split(" ")[1];
       const user = await verifyTokenServerless(token);
       if (!user || !user.isAdmin) return res.status(403).json({ error: "Access denied" });
 
-      // GET
       if (req.method === "GET") {
         if (url.endsWith("/reminder-preview")) {
           const today = moment().tz("Asia/Kolkata").startOf("day").toDate();
@@ -91,14 +88,12 @@ app.all("*", async (req, res) => {
         return res.json(fees);
       }
 
-      // POST
       if (req.method === "POST") {
         const fee = new Fee(req.body);
         await fee.save();
         return res.json({ success: true });
       }
 
-      // PUT
       if (req.method === "PUT") {
         const idMatch = url.match(/\/fees\/([a-f0-9]{24})/);
         if (!idMatch) return res.status(400).json({ error: "Fee ID missing" });
@@ -118,7 +113,7 @@ app.all("*", async (req, res) => {
       }
     }
 
-    /* ---------------- CRON ---------------- */
+    // CRON
     if (url.startsWith("/cron/ping") && req.method === "GET") {
       const token = req.query.token;
       if (token !== process.env.CRON_SECRET) return res.status(403).json({ error: "Unauthorized" });
@@ -126,99 +121,118 @@ app.all("*", async (req, res) => {
       return res.json({ success: true, remindersSent: result.count });
     }
 
-  /* ---------------- SEARCH ---------------- */
-if (url.startsWith("/search") && req.method === "GET") {
-  const { q, lat, lng, radius = 20000, limit = 20, page = 1 } = req.query;
-  const pageLimit = Math.min(parseInt(limit), 50);
-  const skip = (Math.max(parseInt(page), 1) - 1) * pageLimit;
-  let results = [];
+    // SEARCH
+    if (url.startsWith("/search") && req.method === "GET") {
+      const { q, lat, lng, radius = 20000, limit = 20, page = 1 } = req.query;
+      const pageLimit = Math.min(parseInt(limit), 50);
+      const skip = (Math.max(parseInt(page), 1) - 1) * pageLimit;
+      let results = [];
 
-  const hasText = q && q.trim() !== "";
-  const hasLocation = lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng));
+      const hasText = q && q.trim() !== "";
+      const hasLocation = lat && lng && !isNaN(parseFloat(lat)) && !isNaN(parseFloat(lng));
 
-  if (hasLocation && !hasText) {
-    results = await Course.find({
-      location: {
-        $nearSphere: {
-          $geometry: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
-          $maxDistance: parseInt(radius),
-        },
-      },
-    })
-      .skip(skip)
-      .limit(pageLimit);
-  } else if (hasText) {
-    results = await Course.find({ $text: { $search: q.trim() } })
-      .skip(skip)
-      .limit(pageLimit)
-      .sort({ score: { $meta: "textScore" } })
-      .select({ score: { $meta: "textScore" } });
+      if (hasLocation && !hasText) {
+        results = await Course.find({
+          location: {
+            $nearSphere: {
+              $geometry: { type: "Point", coordinates: [parseFloat(lng), parseFloat(lat)] },
+              $maxDistance: parseInt(radius),
+            },
+          },
+        }).skip(skip).limit(pageLimit);
+      } else if (hasText) {
+        results = await Course.find({ $text: { $search: q.trim() } })
+          .skip(skip)
+          .limit(pageLimit)
+          .sort({ score: { $meta: "textScore" } })
+          .select({ score: { $meta: "textScore" } });
 
-    const words = q.toLowerCase().split(" ");
-    results = results.filter((course) =>
-      words.every(
-        (word) =>
-          course.name.toLowerCase().includes(word) ||
-          course.tags.some((tag) => tag.toLowerCase().includes(word)) ||
-          course.description.toLowerCase().includes(word)
-      )
-    );
-  } else {
-    results = await Course.find().skip(skip).limit(pageLimit);
-  }
+        const words = q.toLowerCase().split(" ");
+        results = results.filter((course) =>
+          words.every(
+            (word) =>
+              course.name.toLowerCase().includes(word) ||
+              course.tags.some((tag) => tag.toLowerCase().includes(word)) ||
+              course.description.toLowerCase().includes(word)
+          )
+        );
+      } else {
+        results = await Course.find().skip(skip).limit(pageLimit);
+      }
 
-  const acceptsHtml = req.headers.accept && req.headers.accept.includes("text/html");
+      const acceptsHtml = req.headers.accept && req.headers.accept.includes("text/html");
 
-  if (acceptsHtml) {
-    const html = `
-      <!DOCTYPE html>
-      <html>
-        <head>
-          <title>Search Results for "${q || 'All Courses'}"</title>
-          <meta name="description" content="Courses related to ${q || 'various topics'}">
-          <style>
-            body { font-family: Arial, sans-serif; padding: 20px; }
-            h1 { color: #333; }
-            .course { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
-            .course h2 { margin: 0; font-size: 1.2em; }
-            .course p { margin: 5px 0; }
-          </style>
-        </head>
-        <body>
-          <h1>Search Results for "${q || 'All Courses'}"</h1>
-          <p>Found ${results.length} course${results.length !== 1 ? 's' : ''}.</p>
-          ${results.map(course => `
-            <div class="course">
-              <h2>${course.name}</h2>
-              <p>${course.description}</p>
-              <p><strong>Tags:</strong> ${course.tags.join(', ')}</p>
-            </div>
-          `).join('')}
-        </body>
-      </html>
-    `;
-    return res.send(html);
-  }
+      if (acceptsHtml) {
+        const html = `
+          <!DOCTYPE html>
+          <html>
+            <head>
+              <title>Search Results for "${q || 'All Courses'}"</title>
+              <meta name="description" content="Courses related to ${q || 'various topics'}">
+              <style>
+                body { font-family: Arial, sans-serif; padding: 20px; }
+                h1 { color: #333; }
+                .course { margin-bottom: 20px; border-bottom: 1px solid #ccc; padding-bottom: 10px; }
+                .course h2 { margin: 0; font-size: 1.2em; }
+                .course p { margin: 5px 0; }
+              </style>
+            </head>
+            <body>
+              <h1>Search Results for "${q || 'All Courses'}"</h1>
+              <p>Found ${results.length} course${results.length !== 1 ? 's' : ''}.</p>
+              ${results.map(course => `
+                <div class="course">
+                  <h2>${course.name}</h2>
+                  <p>${course.description}</p>
+                  <p><strong>Tags:</strong> ${course.tags.join(', ')}</p>
+                </div>
+              `).join('')}
+            </body>
+          </html>
+        `;
+        return res.send(html);
+      }
 
-  return res.json({ success: true, count: results.length, results });
-}
-    /* ---------------- WARM ---------------- */
+      return res.json({ success: true, count: results.length, results });
+    }
+
+    // WARM
     if (url.startsWith("/warm") && req.method === "GET") {
       const token = req.query.token;
       if (token !== process.env.CRON_SECRET) return res.status(403).send("Forbidden");
       return res.status(200).send("OK");
     }
 
-    // Serve React frontend
-    if (req.method === "GET") return res.sendFile(path.join(__dirname, "dist", "index.html"));
+    // ✅ Serve React frontend with 404 status for unknown GET routes
+    if (req.method === "GET") {
+  const urlPath = req.url.split("?")[0].toLowerCase().replace(/\/$/, "");
 
-    res.status(404).json({ error: "Not found" });
+  const staticRoutes = [
+    "/", "/about", "/course", "/alumni", "/contact"
+  ];
+
+  const isStatic = staticRoutes.includes(urlPath);
+
+  const isCourseAlias = /^\/(c-c-plus-plus|java|python|javascript|web-design|react|dsa|docker|java-full-stack|python-full-stack|mern-stack|oracle|mongodb|sql|data-analytics)-(course|training|classes|coaching)-in-(bhopal|mp-nagar-bhopal|mpnagar|mp-nagar)$/.test(urlPath);
+
+  if (isStatic || isCourseAlias) {
+    // ✅ Valid route → return 200 OK
+    return res.sendFile(path.join(__dirname, "dist", "index.html"));
+  }
+
+  // ❌ Unknown route → return 404
+  res.status(404);
+  return res.sendFile(path.join(__dirname, "dist", "index.html"));
+}
+
+
+    // ✅ Return 404 for other unmatched methods
+    return res.status(404).json({ error: "Not found" });
   } catch (err) {
     console.error("Server error:", err);
     res.status(500).json({ error: "Server error" });
   }
 });
-
 // Local server
 // (async () => {
 //   try {
