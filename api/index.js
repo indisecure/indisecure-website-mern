@@ -208,7 +208,7 @@ app.all("*", async (req, res) => {
   const urlPath = req.url.split("?")[0].toLowerCase().replace(/\/$/, "");
 
   const staticRoutes = [
-    "/", "/about", "/course", "/alumni", "/contact"
+    "/", "/about", "/course", "/alumni", "/contact","/register","/login","/search"
   ];
 
   const isStatic = staticRoutes.includes(urlPath);
